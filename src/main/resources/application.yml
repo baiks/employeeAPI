@@ -34,3 +34,13 @@ logging:
     org:
       springframework:
         security: DEBUG
+mail:
+  smtp:
+    host: smtp.ethereal.email
+    port: 587
+    auth: true
+    starttls:
+      enable: true
+  username: ulises62@ethereal.email
+  password: DAYvJsx7K9KmHB2cPq
+

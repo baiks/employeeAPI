@@ -1,19 +1,14 @@
-# Customer Service
+# Employee API
 
-Manages customer data, including registration, authentication, and profile management.
+Build an Employee Management API using Spring Boot
 
-## Architecture
-
-![image](architecture.png)
 
 ## Pre-requisites
 
-- [**Java 17**](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
-- [**MySQL**](https://www.mysql.com/downloads/)
+- [**Java 21**](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 - [**Maven**](https://maven.apache.org/download.cgi)
 - [**Docker**](https://www.docker.com/)
 - [**Docker Compose**](https://docs.docker.com/reference/cli/docker/compose/)
-- [**Kafka**](https://kafka.apache.org/quickstart)
 
 ## How to run the project
 
@@ -25,19 +20,7 @@ Open the project using IDE of you choice i.e. IntelliJ idea,eclipse, vs, spring 
 
 #### Setting up database
 
-You can either use h2 or mysql database by changing the configuration on application.yml
-
-```sh
-spring:
-  profiles:
-    active: h2 or mysql
-    
-    For mysql remember to change the database configurations below
-    
-    `url: jdbc:mysql://127.0.0.1:3306/interview_im?createDatabaseIfNotExist=true`
-    `username: root`
-    `password: Baiks@123`
-```
+No need to worry about the DB setup. The application uses h2 memory database.
 
 
 #### Run the project
@@ -48,8 +31,9 @@ spring:
 To access the APIs, open the link http://localhost:8067/swagger-ui
 ```
 
-![image](img.png)
+![image](swagger.png)
 
 ```sh
-You can create your own user on swagger by invoking the end point /auth/signup.
+NB: To create an employee you need to create atleast one department using the API 
+/api/employees/department.
 ```

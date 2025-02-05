@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  account-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 682263059097.dkr.ecr.us-east-1.amazonaws.com/account-service
+    container_name: account-service
+    ports:
+      - "8002:8002"
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db:3306/interview_im?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: baiks
+      SPRING_DATASOURCE_PASSWORD: Baiks@123
+      SPRING_DATASOURCE_HIKARI_AUTOCOMMIT: "true"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+      KAFKA_PRODUCER_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_PRODUCER_KEY_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+      KAFKA_PRODUCER_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+    networks:
+      - custservice_imnetwork
+networks:
+  custservice_imnetwork:
+    external: true
