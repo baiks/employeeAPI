@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 public class EmployeesDto {
     @Getter
     @Setter
+    @Builder
     public static class CreateDto {
 
         @NotBlank(message = "First name cannot be blank")

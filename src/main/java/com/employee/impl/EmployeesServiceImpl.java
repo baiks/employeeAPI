@@ -36,25 +36,20 @@ public class EmployeesServiceImpl implements EmployeesService {
     public ResponseEntity<?> add(EmployeesDto.CreateDto createDto) {
         Employees employees = null;
         EmployeesDto.responseDto responseDto = null;
-        try {
-            Department department = departmentRepository.findById(createDto.getDepartmentId())
-                    .orElseThrow(() -> new EmployeeExistsException("Department with ID " + createDto.getDepartmentId() + " not found", HttpStatus.NOT_FOUND));
-            if (employeesRepository.findByEmail(createDto.getEmail()).isPresent()) {
-                throw new EmployeeExistsException("Employee already exists", HttpStatus.CONFLICT);
-            }
-            employees = modelMapper.map(createDto, Employees.class);
-            employees.setDepartment(department);
-            employees = employeesRepository.save(employees);
-            if (employees.getId() > 0) {
-                String name = String.join(" ", createDto.getFirstName(), createDto.getLastName());
-                String content = String.format(Constants.NoticationConstants.createEmailTemplate, name, employees.getId());
-                List<String> recipients = List.of(employees.getEmail());
-                NotificationDto notificationDto = NotificationDto.builder().content(content).recipients(recipients).build();
-                notificationsService.sendEmail(notificationDto);
-            }
-        } catch (Exception ex) {
-            responseDto = EmployeesDto.responseDto.builder().status("01").message(ex.getMessage()).build();
-            return new ResponseEntity<>(responseDto, HttpStatus.INTERNAL_SERVER_ERROR);
+        Department department = departmentRepository.findById(createDto.getDepartmentId())
+                .orElseThrow(() -> new EmployeeNotFoundException("Department with ID " + createDto.getDepartmentId() + " not found", HttpStatus.NOT_FOUND));
+        if (employeesRepository.findByEmail(createDto.getEmail()).isPresent()) {
+            throw new EmployeeExistsException("Employee already exists", HttpStatus.CONFLICT);
+        }
+        employees = modelMapper.map(createDto, Employees.class);
+        employees.setDepartment(department);
+        employees = employeesRepository.save(employees);
+        if (employees.getId() > 0) {
+            String name = String.join(" ", createDto.getFirstName(), createDto.getLastName());
+            String content = String.format(Constants.NoticationConstants.createEmailTemplate, name, employees.getId());
+            List<String> recipients = List.of(employees.getEmail());
+            NotificationDto notificationDto = NotificationDto.builder().content(content).recipients(recipients).build();
+            notificationsService.sendEmail(notificationDto);
         }
         return new ResponseEntity<>(employees, HttpStatus.CREATED);
     }
@@ -63,16 +58,11 @@ public class EmployeesServiceImpl implements EmployeesService {
     public ResponseEntity<?> update(EmployeesDto.EditDto editDto, Long id) {
         Employees employees = null;
         EmployeesDto.responseDto responseDto = null;
-        try {
-            Employees existingEmployees = employeesRepository.findById(id).orElseThrow(() -> new EmployeeExistsException("Employee with ID " + id + " does not exist", HttpStatus.NOT_FOUND));
-            modelMapper.map(editDto, existingEmployees);
-            existingEmployees.setId(id);
-            employees = employeesRepository.save(existingEmployees);
-            return ResponseEntity.ok(employees);
-        } catch (Exception e) {
-            responseDto = EmployeesDto.responseDto.builder().status("01").message(e.getMessage()).build();
-            return new ResponseEntity<>(responseDto, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Employees existingEmployees = employeesRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + id + " does not exist", HttpStatus.NOT_FOUND));
+        modelMapper.map(editDto, existingEmployees);
+        existingEmployees.setId(id);
+        employees = employeesRepository.save(existingEmployees);
+        return ResponseEntity.ok(employees);
     }
 
     @Override
@@ -89,13 +79,8 @@ public class EmployeesServiceImpl implements EmployeesService {
     @Override
     public ResponseEntity<?> findById(Long id) {
         if (id > 0) {
-            Optional<Employees> employees = Optional.ofNullable(employeesRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException("Invalid Credentials")));
-            if (employees.isPresent()) {
-                return new ResponseEntity<>(employees.get(), HttpStatus.OK);
-            } else {
-                EmployeesDto.responseDto responseDto = EmployeesDto.responseDto.builder().status("01").message("Employee Id " + id + " not found").build();
-                return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
-            }
+            Employees employees = employeesRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException("Employee Id " + id + " not found", HttpStatus.NOT_FOUND));
+            return new ResponseEntity<>(employees, HttpStatus.OK);
         } else {
             EmployeesDto.responseDto responseDto = EmployeesDto.responseDto.builder().status("01").message("Employee Id " + id + " is invalid").build();
             return new ResponseEntity<>(responseDto, HttpStatus.NO_CONTENT);
@@ -113,5 +98,18 @@ public class EmployeesServiceImpl implements EmployeesService {
             return new ResponseEntity<>(responseDto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(department, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<?> delete(Long id) {
+        if (id > 0) {
+            Employees employees = employeesRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException("Employee Id " + id + " not found", HttpStatus.NOT_FOUND));
+            employeesRepository.delete(employees);
+            EmployeesDto.responseDto responseDto = EmployeesDto.responseDto.builder().status("00").message("Employee Id " + id + " deleted successfully").build();
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } else {
+            EmployeesDto.responseDto responseDto = EmployeesDto.responseDto.builder().status("01").message("Employee Id " + id + " is invalid").build();
+            return new ResponseEntity<>(responseDto, HttpStatus.NO_CONTENT);
+        }
     }
 }

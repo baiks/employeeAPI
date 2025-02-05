@@ -6,6 +6,7 @@ import com.employee.dtos.LimitSortDto;
 import com.employee.services.EmployeesService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,5 +44,10 @@ public class EmployeesController {
     @RequestMapping(method = RequestMethod.POST, value = "/department")
     public ResponseEntity<?> createDepartment(@Valid @RequestBody DepartmentDto departmentDto) {
         return employeesService.addDepartment(departmentDto);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        return employeesService.delete(id);
     }
 }

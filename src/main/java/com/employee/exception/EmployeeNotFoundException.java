@@ -1,27 +1,19 @@
 package com.employee.exception;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-@NoArgsConstructor
 @Getter
 public class EmployeeNotFoundException extends RuntimeException {
+    private final HttpStatus status;
 
-    /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	protected String message;
-    protected HttpStatus status;
-
-	public EmployeeNotFoundException(String message) {
+    public EmployeeNotFoundException(String message) {
         super(message);
-        this.message = message;
+        this.status = HttpStatus.NOT_FOUND;
     }
 
     public EmployeeNotFoundException(String message, HttpStatus status) {
-        this.message = message;
+        super(message);
         this.status = status;
     }
 }

@@ -37,4 +37,11 @@ public interface EmployeesService {
      * @return
      */
     ResponseEntity<?> addDepartment(DepartmentDto departmentDto);
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    ResponseEntity<?> delete(Long id);
 }

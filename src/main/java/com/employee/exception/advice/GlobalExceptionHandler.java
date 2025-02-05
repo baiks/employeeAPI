@@ -88,15 +88,15 @@ public class GlobalExceptionHandler extends MessageSourceAdviceCtrl {
 
     @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEmployeeNotFoundException(EmployeeNotFoundException e) {
-        log.error("EmployeeNotFoundException... {}", e.getMessage());
-        return ResponseEntity.status(e.getStatus())
+        log.error("handleEmployeeNotFoundException... {} {}", e.getMessage(), e.getStatus());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(e.getStatus().toString(), e.getMessage()));
     }
 
     @ExceptionHandler(EmployeeExistsException.class)
-    public ResponseEntity<ErrorResponse> handleEmployeeNotFoundException(EmployeeExistsException e) {
-        log.error("EmployeeExistsException... {}", e.getMessage());
-        return ResponseEntity.status(e.getStatus())
+    public ResponseEntity<ErrorResponse> handleEmployeeExistsException(EmployeeExistsException e) {
+        log.error("EmployeeExistsException... {} {}", e.getMessage(), e.getStatus());
+        return ResponseEntity.status(e.getStatus().value())
                 .body(new ErrorResponse(e.getStatus().toString(), e.getMessage()));
     }
 
