@@ -23,9 +23,22 @@ Open the project using IDE of you choice i.e. IntelliJ idea,eclipse, vs, spring 
 No need to worry about the DB setup. The application uses h2 memory database.
 
 
-#### Run the project
+#### IDE Run the project
 
-- Run the project using IDE. You expect the code to run successfully. Alternatively you can run the command docker-compose up -d`
+- Run the project using IDE. You expect the code to run successfully. 
+
+#### Docker Run the project
+
+- Alternatively you can run the command docker-compose up -d
+
+#### Maven Run the project
+
+- mvn spring-boot:run
+
+#### Run Tests
+
+- mvn test
+
 ## Access the APIs
 ```sh
 To access the APIs, open the link http://localhost:8067/swagger-ui
